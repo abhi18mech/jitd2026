@@ -13,6 +13,7 @@ const statuses: Array<'All' | TrackStatus> = [
   'Lost',
   'Recovered',
   'Uncertain',
+  'Expired',
 ]
 
 function StatusBadge({ status }: { status: TrackStatus }) {
@@ -31,11 +32,12 @@ export default function ObjectTracking({
   initialSearch = '',
 }: ObjectTrackingProps) {
   const [search, setSearch] = useState('')
-useEffect(() => {
-  setSearch(initialSearch)
-}, [initialSearch])
   const [status, setStatus] = useState<'All' | TrackStatus>('All')
   const [selected, setSelected] = useState<TrackedObject | null>(null)
+
+  useEffect(() => {
+    setSearch(initialSearch)
+  }, [initialSearch])
 
   const filteredObjects = useMemo(() => {
     return trackingObjects.filter((object) => {
@@ -57,6 +59,7 @@ useEffect(() => {
     lost: trackingObjects.filter(x => x.status === 'Lost').length,
     recovered: trackingObjects.filter(x => x.status === 'Recovered').length,
     uncertain: trackingObjects.filter(x => x.status === 'Uncertain').length,
+    expired: trackingObjects.filter(x => x.status === 'Expired').length,
   }
 
   return (
@@ -77,22 +80,31 @@ useEffect(() => {
           <strong>{counts.total}</strong>
           <small>All tracked records</small>
         </div>
+
         <div className="panel object-stat">
           <span>Active Tracks</span>
           <strong className="object-green">{counts.active}</strong>
           <small>Currently active</small>
         </div>
+
         <div className="panel object-stat">
           <span>Recovered</span>
           <strong className="object-purple">{counts.recovered}</strong>
           <small>Identity restored</small>
         </div>
+
         <div className="panel object-stat">
           <span>Lost / Uncertain</span>
           <strong className="object-orange">
             {counts.lost + counts.uncertain}
           </strong>
           <small>Needs attention</small>
+        </div>
+
+        <div className="panel object-stat">
+          <span>Expired</span>
+          <strong>{counts.expired}</strong>
+          <small>Tracking lifecycle ended</small>
         </div>
       </div>
 
@@ -206,7 +218,9 @@ useEffect(() => {
         </div>
 
         <div className="table-footer">
-          <span>Showing {filteredObjects.length} of {trackingObjects.length} demo records</span>
+          <span>
+            Showing {filteredObjects.length} of {trackingObjects.length} demo records
+          </span>
           <span>ARGUS-X OBJECT DATABASE</span>
         </div>
       </section>

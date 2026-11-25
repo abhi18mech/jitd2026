@@ -1,4 +1,10 @@
-export type TrackStatus = 'Active' | 'Lost' | 'Recovered' | 'Uncertain'
+
+export type TrackStatus =
+  | 'Active'
+  | 'Lost'
+  | 'Recovered'
+  | 'Uncertain'
+  | 'Expired'
 
 export interface TrackedObject {
   id: string
