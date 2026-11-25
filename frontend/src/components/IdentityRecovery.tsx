@@ -10,6 +10,17 @@ import type { TrackStatus } from '../types/tracking'
 const filters: Array<'All' | TrackStatus> = [
   'All', 'Recovered', 'Active', 'Lost', 'Uncertain',
 ]
+function getConfidenceLevel(confidence: number) {
+  if (confidence >= 90) {
+    return { label: 'High', className: 'confidence-high' }
+  }
+
+  if (confidence >= 70) {
+    return { label: 'Medium', className: 'confidence-medium' }
+  }
+
+  return { label: 'Low', className: 'confidence-low' }
+}
 
 export default function IdentityRecovery() {
   const [search, setSearch] = useState('')
@@ -183,7 +194,12 @@ export default function IdentityRecovery() {
               <div className="event-content">
                 <div className="event-title">
                   <strong>{event.id}</strong>
-                  <span>{event.confidence}% confidence</span>
+                  <span>
+  {event.confidence}% confidence ·{' '}
+  <strong className={`confidence-level ${getConfidenceLevel(event.confidence).className}`}>
+    {getConfidenceLevel(event.confidence).label}
+  </strong>
+</span>
                 </div>
 
                 <p>{event.description}</p>
