@@ -25,6 +25,9 @@ function getConfidenceLevel(confidence: number) {
 export default function IdentityRecovery() {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<'All' | TrackStatus>('All')
+  const [currentPage, setCurrentPage] = useState(1)
+
+const EVENTS_PER_PAGE = 3
   const [selected, setSelected] =
     useState<(typeof recoveryEvents)[number] | null>(null)
 
@@ -40,6 +43,14 @@ export default function IdentityRecovery() {
       return matchesSearch && matchesStatus
     })
   }, [search, status])
+  const totalPages = Math.ceil(
+  filteredEvents.length / EVENTS_PER_PAGE
+)
+
+const paginatedEvents = filteredEvents.slice(
+  (currentPage - 1) * EVENTS_PER_PAGE,
+  currentPage * EVENTS_PER_PAGE
+)
 
   const recovered = recoveryEvents.filter(
     event => event.status === 'Recovered'
@@ -184,7 +195,7 @@ export default function IdentityRecovery() {
         </div>
 
         <div className="recovery-list identity-event-list">
-          {filteredEvents.map(event => (
+          {paginatedEvents.map(event => (
             <div
               className="recovery-event identity-event"
               key={`${event.id}-${event.time}`}
@@ -224,11 +235,45 @@ export default function IdentityRecovery() {
           )}
         </div>
 
-        <div className="table-footer">
-          <span>Showing {filteredEvents.length} of {recoveryEvents.length} demo events</span>
-          <span>ARGUS-X RECOVERY RECORDS</span>
-        </div>
-      </section>
+       
+<div className="table-footer identity-pagination">
+  <span>
+    Showing {filteredEvents.length === 0 ? 0 : (currentPage - 1) * EVENTS_PER_PAGE + 1}
+    {' - '}
+    {Math.min(currentPage * EVENTS_PER_PAGE, filteredEvents.length)}
+    {' of '}
+    {filteredEvents.length} demo events
+  </span>
+
+  <div className="pagination-controls">
+    <button
+      className="pagination-button"
+      disabled={currentPage === 1}
+      onClick={() =>
+        setCurrentPage(previous => Math.max(1, previous - 1))
+      }
+    >
+      Previous
+    </button>
+
+    <span className="pagination-page">
+      Page {currentPage} of {Math.max(totalPages, 1)}
+    </span>
+
+    <button
+      className="pagination-button"
+      disabled={currentPage >= totalPages}
+      onClick={() =>
+        setCurrentPage(previous => Math.min(totalPages, previous + 1))
+      }
+    >
+      Next
+    </button>
+  </div>
+
+  <span>ARGUS-X RECOVERY RECORDS</span>
+</div>
+
 
       {selected && (
         <div
