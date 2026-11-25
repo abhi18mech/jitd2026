@@ -15,6 +15,7 @@ import StatCard from './components/StatCard'
 import LiveMonitor from './components/LiveMonitor'
 import TrackingTable from './components/TrackingTable'
 import RecoveryHistory from './components/RecoveryHistory'
+import ObjectTracking from './components/ObjectTracking'
 import { trackingObjects, performanceData } from './data/mockData'
 import './App.css'
 
@@ -202,30 +203,9 @@ function App() {
             <LiveMonitor />
           </>
         )
-
-      case 'Object Tracking':
-        return (
-          <>
-            <div className="welcome-row">
-              <div>
-                <h2>Object Tracking</h2>
-                <p>View tracked objects and their current status.</p>
-              </div>
-            </div>
-            <div className="stats-grid">
-              <StatCard label="Total Objects" value={trackingObjects.length}
-                change="Tracked" detail="Demo records"
-                icon={<Users size={19} />} color="cyan" />
-              <StatCard label="Active Tracks" value={activeCount}
-                change="Active" detail="Demo records"
-                icon={<Eye size={19} />} color="green" />
-              <StatCard label="Lost Objects" value={lostCount}
-                change="Lost" detail="Requires review"
-                icon={<AlertTriangle size={19} />} color="orange" />
-            </div>
-            <TrackingTable />
-          </>
-        )
+case 'Object Tracking':
+  return <ObjectTracking />
+      
 
       case 'Identity Recovery':
         return (
