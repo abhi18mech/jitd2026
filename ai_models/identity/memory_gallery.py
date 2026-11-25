@@ -9,22 +9,26 @@ class IdentityMemory:
         similarity_threshold=0.75,
         ambiguity_margin=0.08,
         max_prototypes=5,
-        min_quality=0.60
+        min_quality=0.60,
+        feature_dim=512
     ):
-        self.gallery = defaultdict(
-            lambda: deque(maxlen=max_prototypes)
-        )
+        self.gallery = defaultdict(lambda: deque(maxlen=max_prototypes))
         self.similarity_threshold = similarity_threshold
         self.ambiguity_margin = ambiguity_margin
         self.min_quality = min_quality
+        self.feature_dim = feature_dim
 
         print("ARGUS-X Identity Memory Initialized")
+        print("Feature dimensions:", self.feature_dim)
 
     def normalize(self, feature):
         feature = np.asarray(feature, dtype=np.float32)
 
-        if feature.ndim != 1:
-            raise ValueError("Feature must be a 1D vector")
+        if feature.ndim != 1 or feature.shape[0] != self.feature_dim:
+            raise ValueError(
+                f"Expected {self.feature_dim}-dimensional feature, "
+                f"received {feature.shape}"
+            )
 
         norm = np.linalg.norm(feature)
 
@@ -55,16 +59,18 @@ class IdentityMemory:
                 for prototype in prototypes
             ]
 
-            scores.append((identity_id, max(similarities)))
+            if similarities:
+                scores.append((identity_id, max(similarities)))
 
-        return sorted(
-            scores,
-            key=lambda item: item[1],
-            reverse=True
-        )
+        return sorted(scores, key=lambda item: item[1], reverse=True)
 
     def match(self, feature, exclude_ids=None):
-        scores = [item for item in self.score_candidates(feature) if item[0] not in (exclude_ids or set())]
+        excluded = exclude_ids or set()
+
+        scores = [
+            item for item in self.score_candidates(feature)
+            if item[0] not in excluded
+        ]
 
         if not scores:
             return None
@@ -91,15 +97,22 @@ class IdentityMemory:
 if __name__ == "__main__":
     memory = IdentityMemory()
 
-    original = np.random.default_rng(42).normal(size=2048)
+    original = np.random.default_rng(42).normal(size=512)
     memory.add(17, original)
 
-    noise = np.random.default_rng(10).normal(
-        0, 0.01, size=2048
-    )
-
+    noise = np.random.default_rng(10).normal(0, 0.01, size=512)
     result = memory.match(original + noise)
 
     print("Stored identities:", memory.get_identity_count())
     print("Recovery result:", result)
 
+    assert result is not None
+    assert result["identity_id"] == 17
+
+    try:
+        memory.add(18, np.zeros(2048))
+        raise AssertionError("Incorrect feature dimensions were accepted")
+    except ValueError:
+        print("Incorrect feature dimensions rejected")
+
+    print("IDENTITY MEMORY TEST PASSED")
