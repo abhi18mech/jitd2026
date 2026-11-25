@@ -1,5 +1,5 @@
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Search, Filter, X, Eye, Camera, Clock,
   Activity, ShieldCheck,
@@ -23,8 +23,17 @@ function StatusBadge({ status }: { status: TrackStatus }) {
   )
 }
 
-export default function ObjectTracking() {
+interface ObjectTrackingProps {
+  initialSearch?: string
+}
+
+export default function ObjectTracking({
+  initialSearch = '',
+}: ObjectTrackingProps) {
   const [search, setSearch] = useState('')
+useEffect(() => {
+  setSearch(initialSearch)
+}, [initialSearch])
   const [status, setStatus] = useState<'All' | TrackStatus>('All')
   const [selected, setSelected] = useState<TrackedObject | null>(null)
 

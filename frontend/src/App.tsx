@@ -45,9 +45,11 @@ function PerformanceChart() {
                 <stop offset="95%" stopColor="#22d3ee" stopOpacity={0} />
               </linearGradient>
             </defs>
+
             <CartesianGrid stroke="#263244" strokeDasharray="3 3" />
             <XAxis dataKey="time" stroke="#748198" fontSize={11} />
             <YAxis stroke="#748198" fontSize={11} />
+
             <Tooltip
               contentStyle={{
                 background: '#111c2c',
@@ -56,6 +58,7 @@ function PerformanceChart() {
                 color: '#e5e7eb',
               }}
             />
+
             <Area
               type="monotone"
               dataKey="fps"
@@ -72,6 +75,7 @@ function PerformanceChart() {
 
 function App() {
   const [active, setActive] = useState('Overview')
+  const [headerSearch, setHeaderSearch] = useState('')
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -115,6 +119,7 @@ function App() {
                 icon={<Users size={19} />}
                 color="cyan"
               />
+
               <StatCard
                 label="Active Tracks"
                 value={activeCount}
@@ -123,6 +128,7 @@ function App() {
                 icon={<Eye size={19} />}
                 color="green"
               />
+
               <StatCard
                 label="Recovered"
                 value={recoveredCount}
@@ -131,6 +137,7 @@ function App() {
                 icon={<RefreshCw size={19} />}
                 color="purple"
               />
+
               <StatCard
                 label="Lost / Uncertain"
                 value={lostCount + uncertainCount}
@@ -148,7 +155,9 @@ function App() {
                 <div className="panel-heading">
                   <div>
                     <div className="panel-title">System Health</div>
-                    <div className="panel-subtitle">Simulated performance</div>
+                    <div className="panel-subtitle">
+                      Simulated performance
+                    </div>
                   </div>
                   <Activity size={18} className="muted-icon" />
                 </div>
@@ -159,6 +168,7 @@ function App() {
                     <strong>98%</strong>
                     <small>DEMO</small>
                   </div>
+
                   <div>
                     <strong className="health-text">Operational</strong>
                     <p>Illustrative system status</p>
@@ -169,14 +179,17 @@ function App() {
                   <span><Gauge size={15} /> Processing speed</span>
                   <strong>33 FPS</strong>
                 </div>
+
                 <div className="health-metric">
                   <span><Zap size={15} /> Processing latency</span>
                   <strong>34 ms</strong>
                 </div>
+
                 <div className="health-metric">
                   <span><Activity size={15} /> Tracking confidence</span>
                   <strong>91.6%</strong>
                 </div>
+
                 <div className="health-note">
                   <span className="small-dot green-dot" />
                   Illustrative metrics – not connected to backend
@@ -208,24 +221,27 @@ function App() {
             <LiveMonitor />
           </>
         )
-     case 'Object Tracking':
-  return <ObjectTracking />
 
-case 'Identity Recovery':
-  return <IdentityRecovery />
+      case 'Object Tracking':
+        return <ObjectTracking initialSearch={headerSearch} />
 
-case 'Tracking History':
-  return <TrackingHistory />  
+      case 'Identity Recovery':
+        return <IdentityRecovery />
 
-    case 'Analytics':
-  return <Analytics />  
-    case 'Settings':
-  return (
-    <Settings
-      theme={theme}
-      onThemeChange={setTheme}
-    />
-  )
+      case 'Tracking History':
+        return <TrackingHistory />
+
+      case 'Analytics':
+        return <Analytics />
+
+      case 'Settings':
+        return (
+          <Settings
+            theme={theme}
+            onThemeChange={setTheme}
+          />
+        )
+
       default:
         return <h2>Page not found</h2>
     }
@@ -242,10 +258,14 @@ case 'Tracking History':
 
       <main className="main-content">
         <Header
-          title={active}
-          onMenuClick={() => setSidebarOpen(true)}
-        />
-
+  title={active}
+  onMenuClick={() => setSidebarOpen(true)}
+  onSearch={(query) => {
+    setHeaderSearch(query)
+    setActive('Object Tracking')
+  }}
+  onNavigate={setActive}
+/>
         <div className="dashboard-content">
           {renderPage()}
 

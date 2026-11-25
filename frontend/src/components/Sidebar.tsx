@@ -34,6 +34,11 @@ export default function Sidebar({
   open,
   onClose,
 }: SidebarProps) {
+  const goToOverview = () => {
+    onNavigate('Overview')
+    onClose()
+  }
+
   return (
     <>
       {open && (
@@ -41,7 +46,20 @@ export default function Sidebar({
       )}
 
       <aside className={`sidebar ${open ? 'sidebar-open' : ''}`}>
-        <div className="brand">
+        {/* Clickable ARGUS-X brand */}
+        <div
+          className="brand brand-button"
+          role="button"
+          tabIndex={0}
+          onClick={goToOverview}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+              goToOverview()
+            }
+          }}
+          aria-label="Go to ARGUS-X Overview"
+        >
           <div className="brand-icon">
             <Shield size={23} />
           </div>
@@ -51,7 +69,15 @@ export default function Sidebar({
             <small>TRACK THE UNTRACKABLE</small>
           </div>
 
-          <button className="mobile-close" onClick={onClose}>
+          <button
+            type="button"
+            className="mobile-close"
+            onClick={(event) => {
+              event.stopPropagation()
+              onClose()
+            }}
+            aria-label="Close sidebar"
+          >
             <X size={19} />
           </button>
         </div>
@@ -61,6 +87,7 @@ export default function Sidebar({
         <nav className="nav-list">
           {navigation.map(({ name, icon: Icon }) => (
             <button
+              type="button"
               key={name}
               className={`nav-item ${
                 active === name ? 'nav-active' : ''
@@ -72,6 +99,7 @@ export default function Sidebar({
             >
               <Icon size={19} />
               <span>{name}</span>
+
               {active === name && (
                 <span className="nav-indicator" />
               )}
