@@ -18,6 +18,7 @@ import RecoveryHistory from './components/RecoveryHistory'
 import ObjectTracking from './components/ObjectTracking'
 import IdentityRecovery from './components/IdentityRecovery'
 import TrackingHistory from './components/TrackingHistory'
+import Analytics from './components/Analytics'
 import { trackingObjects, performanceData } from './data/mockData'
 import './App.css'
 
@@ -214,33 +215,8 @@ case 'Identity Recovery':
 case 'Tracking History':
   return <TrackingHistory />  
 
-      case 'Analytics':
-        return (
-          <>
-            <div className="welcome-row">
-              <div>
-                <h2>Analytics</h2>
-                <p>Explore illustrative tracking and system performance data.</p>
-              </div>
-              <div className="demo-indicator">
-                <span /> DEMO ANALYTICS
-              </div>
-            </div>
-            <div className="stats-grid">
-              <StatCard label="Total Objects" value={trackingObjects.length}
-                change="Dataset" detail="Demo records"
-                icon={<Users size={19} />} color="cyan" />
-              <StatCard label="Active Tracks" value={activeCount}
-                change="Currently active" detail="Demo records"
-                icon={<Eye size={19} />} color="green" />
-              <StatCard label="Recovered" value={recoveredCount}
-                change="Restored" detail="Demo records"
-                icon={<RefreshCw size={19} />} color="purple" />
-            </div>
-            <PerformanceChart />
-          </>
-        )
-
+    case 'Analytics':
+  return <Analytics />  
       case 'Settings':
         return (
           <>
