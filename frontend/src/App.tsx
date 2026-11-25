@@ -1,4 +1,4 @@
-
+﻿
 import { useState } from 'react'
 import {
   Activity, Users, Eye, RefreshCw, Gauge,
@@ -18,6 +18,8 @@ import RecoveryHistory from './components/RecoveryHistory'
 import ObjectTracking from './components/ObjectTracking'
 import IdentityRecovery from './components/IdentityRecovery'
 import TrackingHistory from './components/TrackingHistory'
+import Analytics from './components/Analytics'
+import Settings from './components/Settings'
 import { trackingObjects, performanceData } from './data/mockData'
 import './App.css'
 
@@ -99,7 +101,7 @@ function App() {
                 <p>Real-time object intelligence and identity continuity.</p>
               </div>
               <div className="demo-indicator">
-                <span /> MOCK DATA · DEMONSTRATION
+                <span /> MOCK DATA ┬╖ DEMONSTRATION
               </div>
             </div>
 
@@ -176,7 +178,7 @@ function App() {
                 </div>
                 <div className="health-note">
                   <span className="small-dot green-dot" />
-                  Illustrative metrics – not connected to backend
+                  Illustrative metrics ΓÇô not connected to backend
                 </div>
               </section>
             </div>
@@ -214,75 +216,10 @@ case 'Identity Recovery':
 case 'Tracking History':
   return <TrackingHistory />  
 
-      case 'Analytics':
-        return (
-          <>
-            <div className="welcome-row">
-              <div>
-                <h2>Analytics</h2>
-                <p>Explore illustrative tracking and system performance data.</p>
-              </div>
-              <div className="demo-indicator">
-                <span /> DEMO ANALYTICS
-              </div>
-            </div>
-            <div className="stats-grid">
-              <StatCard label="Total Objects" value={trackingObjects.length}
-                change="Dataset" detail="Demo records"
-                icon={<Users size={19} />} color="cyan" />
-              <StatCard label="Active Tracks" value={activeCount}
-                change="Currently active" detail="Demo records"
-                icon={<Eye size={19} />} color="green" />
-              <StatCard label="Recovered" value={recoveredCount}
-                change="Restored" detail="Demo records"
-                icon={<RefreshCw size={19} />} color="purple" />
-            </div>
-            <PerformanceChart />
-          </>
-        )
-
-      case 'Settings':
-        return (
-          <>
-            <div className="welcome-row">
-              <div>
-                <h2>Settings</h2>
-                <p>Application information and demonstration configuration.</p>
-              </div>
-            </div>
-
-            <section className="panel">
-              <div className="panel-heading">
-                <div>
-                  <div className="panel-title">Application Settings</div>
-                  <div className="panel-subtitle">
-                    Current frontend configuration
-                  </div>
-                </div>
-              </div>
-
-              <div className="health-metric">
-                <span>Application</span>
-                <strong>ARGUS-X</strong>
-              </div>
-              <div className="health-metric">
-                <span>Version</span>
-                <strong>1.0.0 Demo</strong>
-              </div>
-              <div className="health-metric">
-                <span>Data source</span>
-                <strong>Mock data</strong>
-              </div>
-              <div className="health-metric">
-                <span>Interface theme</span>
-                <strong>Dark</strong>
-              </div>
-              <div className="health-note">
-                Backend settings will be added after API integration.
-              </div>
-            </section>
-          </>
-        )
+    case 'Analytics':
+  return <Analytics />  
+     case 'Settings':
+  return <Settings /> 
 
       default:
         return <h2>Page not found</h2>
@@ -308,8 +245,8 @@ case 'Tracking History':
           {renderPage()}
 
           <footer className="dashboard-footer">
-            <span>ARGUS-X · TRACK THE UNTRACKABLE</span>
-            <span>CLOCKIT 2026 · FRONTEND DEMONSTRATION</span>
+            <span>ARGUS-X ┬╖ TRACK THE UNTRACKABLE</span>
+            <span>CLOCKIT 2026 ┬╖ FRONTEND DEMONSTRATION</span>
           </footer>
         </div>
       </main>
