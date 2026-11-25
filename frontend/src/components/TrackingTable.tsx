@@ -3,6 +3,10 @@ import { trackingObjects } from '../data/mockData'
 import type { TrackStatus } from '../types/tracking'
 import { ArrowUpRight } from 'lucide-react'
 
+interface TrackingTableProps {
+  onViewAll: () => void
+}
+
 function StatusBadge({ status }: { status: TrackStatus }) {
   return (
     <span className={`status-badge status-${status.toLowerCase()}`}>
@@ -11,7 +15,7 @@ function StatusBadge({ status }: { status: TrackStatus }) {
   )
 }
 
-export default function TrackingTable() {
+export default function TrackingTable({ onViewAll }: TrackingTableProps) {
   return (
     <section className="panel tracking-panel">
       <div className="panel-heading">
@@ -69,7 +73,14 @@ export default function TrackingTable() {
 
       <div className="table-footer">
         <span>Showing demonstration tracking records</span>
-        <span>View all <ArrowUpRight size={13} /></span>
+
+        <button
+          type="button"
+          className="table-view-all"
+          onClick={onViewAll}
+        >
+          View all <ArrowUpRight size={13} />
+        </button>
       </div>
     </section>
   )

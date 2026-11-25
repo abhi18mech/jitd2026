@@ -198,7 +198,9 @@ function App() {
             </div>
 
             <div className="lower-grid">
-              <TrackingTable />
+              <TrackingTable
+              onViewAll={() => setActive('Object Tracking')}
+            />
               <RecoveryHistory />
             </div>
 
@@ -280,3 +282,4 @@ function App() {
 }
 
 export default App
+
