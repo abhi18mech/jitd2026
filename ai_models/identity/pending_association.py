@@ -49,44 +49,62 @@
         if owner is not None and owner != tracker_id:
             return None
 
+        margin = similarity - second_similarity
+
+        if margin < self.ambiguity_margin:
+            print(
+                f"AMBIGUITY WAIT | Tracker {tracker_id} | "
+                f"Identity {candidate_identity} | Margin {margin:.4f}"
+            )
+
+            # Do not let ambiguous observations extend a candidate indefinitely.
+            if candidate is not None:
+                candidate["last_frame"] = frame_number
+
+            return None
+
         if candidate is None:
             candidate = {
                 "identity_id": candidate_identity,
                 "observations": 0,
                 "confirmed_observations": 0,
-                "last_frame": frame_number
+                "last_frame": frame_number,
+                "similarity_sum": 0.0,
+                "minimum_similarity": 1.0
             }
 
             self.pending[tracker_id] = candidate
             self.reservations[candidate_identity] = tracker_id
 
         candidate["observations"] += 1
+        candidate["confirmed_observations"] += 1
         candidate["last_frame"] = frame_number
-
-        margin = similarity - second_similarity
-        unambiguous = margin >= self.ambiguity_margin
-
-        if unambiguous:
-            candidate["confirmed_observations"] += 1
-        else:
-            print(
-                f"AMBIGUITY WAIT | Tracker {tracker_id} | "
-                f"Identity {candidate_identity} | "
-                f"Margin {margin:.4f}"
-            )
-            return None
+        candidate["similarity_sum"] += similarity
+        candidate["minimum_similarity"] = min(
+            candidate["minimum_similarity"],
+            similarity
+        )
 
         if candidate["confirmed_observations"] >= self.confirmation_frames:
 
             confirmed_id = candidate["identity_id"]
             observations = candidate["observations"]
 
+            average_similarity = (
+                candidate["similarity_sum"]
+                / candidate["confirmed_observations"]
+            )
+
+            minimum_similarity = candidate["minimum_similarity"]
+
             self.remove(tracker_id)
 
             return {
                 "identity_id": confirmed_id,
                 "status": "CONFIRMED",
-                "observations": observations
+                "observations": observations,
+                "average_similarity": round(average_similarity, 4),
+                "minimum_similarity": round(minimum_similarity, 4)
             }
 
         return None
@@ -129,29 +147,40 @@ if __name__ == "__main__":
 
     assert manager.update(101, 1, 0.94, 1, 0.92) is None
     assert manager.update(101, 1, 0.95, 2, 0.93) is None
-    assert manager.update(101, 1, 0.96, 3, 0.94) is None
 
-    assert manager.get_pending_count() == 1
+    assert manager.get_pending_count() == 0
 
-    print("PASS: Ambiguous matches remain pending")
+    print("PASS: Ambiguous matches rejected")
 
     print("\nTEST 2: Three clear observations confirm")
 
-    assert manager.update(101, 1, 0.94, 4, 0.80) is None
-    assert manager.update(101, 1, 0.93, 5, 0.80) is None
+    assert manager.update(101, 1, 0.94, 3, 0.80) is None
+    assert manager.update(101, 1, 0.93, 4, 0.80) is None
 
-    result = manager.update(101, 1, 0.95, 6, 0.80)
+    result = manager.update(101, 1, 0.95, 5, 0.80)
 
     assert result is not None
     assert result["identity_id"] == 1
     assert result["status"] == "CONFIRMED"
+    assert result["observations"] == 3
 
     print("PASS:", result)
 
     print("\nTEST 3: Weak matches do not confirm")
 
-    assert manager.update(102, 2, 0.50, 7, 0.10) is None
+    assert manager.update(102, 2, 0.50, 6, 0.10) is None
 
     print("PASS: Weak match rejected")
+
+    print("\nTEST 4: Duplicate reservations blocked")
+
+    assert manager.update(103, 1, 0.95, 7, 0.80) is None
+
+    blocked = manager.update(104, 1, 0.95, 7, 0.80)
+
+    assert blocked is None
+    assert manager.reservations[1] == 103
+
+    print("PASS: Duplicate reservation blocked")
 
     print("\nALL PENDING ASSOCIATION TESTS PASSED")
