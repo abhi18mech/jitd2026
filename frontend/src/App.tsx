@@ -16,6 +16,7 @@ import LiveMonitor from './components/LiveMonitor'
 import TrackingTable from './components/TrackingTable'
 import RecoveryHistory from './components/RecoveryHistory'
 import ObjectTracking from './components/ObjectTracking'
+import IdentityRecovery from './components/IdentityRecovery'
 import { trackingObjects, performanceData } from './data/mockData'
 import './App.css'
 
@@ -206,20 +207,9 @@ function App() {
 case 'Object Tracking':
   return <ObjectTracking />
       
-
-      case 'Identity Recovery':
-        return (
-          <>
-            <div className="welcome-row">
-              <div>
-                <h2>Identity Recovery</h2>
-                <p>Review object identity recovery and restoration records.</p>
-              </div>
-            </div>
-            <RecoveryHistory />
-          </>
-        )
-
+case 'Identity Recovery':
+  return <IdentityRecovery />
+      
       case 'Tracking History':
         return (
           <>
