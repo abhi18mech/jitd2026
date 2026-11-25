@@ -72,6 +72,7 @@ function PerformanceChart() {
 
 function App() {
   const [active, setActive] = useState('Overview')
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const activeCount = trackingObjects.filter(
@@ -218,16 +219,20 @@ case 'Tracking History':
 
     case 'Analytics':
   return <Analytics />  
-     case 'Settings':
-  return <Settings /> 
-
+    case 'Settings':
+  return (
+    <Settings
+      theme={theme}
+      onThemeChange={setTheme}
+    />
+  )
       default:
         return <h2>Page not found</h2>
     }
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${theme === 'light' ? 'light-theme' : ''}`}>
       <Sidebar
         active={active}
         onNavigate={setActive}

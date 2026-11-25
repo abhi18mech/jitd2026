@@ -16,7 +16,12 @@ const initialCameras = [
   { id: 'CAM-04', name: 'Camera 04', enabled: true },
 ]
 
-export default function Settings() {
+interface SettingsProps {
+  theme: 'dark' | 'light'
+  onThemeChange: (theme: 'dark' | 'light') => void
+}
+
+export default function Settings({ theme, onThemeChange }: SettingsProps) {
   const [cameras, setCameras] = useState(initialCameras)
   const [threshold, setThreshold] = useState(70)
   const [continuousTracking, setContinuousTracking] = useState(true)
@@ -294,10 +299,26 @@ export default function Settings() {
           <strong>Mock data</strong>
         </div>
 
-        <div className="settings-row">
-          <span>Interface theme</span>
-          <strong>Dark</strong>
-        </div>
+       <div className="settings-row">
+  <span>Interface theme</span>
+  <strong>{theme === 'dark' ? 'Dark' : 'Light'}</strong>
+</div>
+
+<div className="settings-row">
+  <div className="settings-row-info">
+    <strong>Dashboard Appearance</strong>
+    <span>Switch between dark and light themes</span>
+  </div>
+
+  <button
+    className="theme-toggle-button"
+    onClick={() =>
+      onThemeChange(theme === 'dark' ? 'light' : 'dark')
+    }
+  >
+    {theme === 'dark' ? '☀ Light Theme' : '☾ Dark Theme'}
+  </button>
+</div>
 
         <div className="health-note">
           Settings are currently managed in frontend state only.

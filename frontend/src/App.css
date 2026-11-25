@@ -1484,3 +1484,338 @@ tr:last-child td { border-bottom: 0; }
   }
 }
 
+/* =========================================
+   ARGUS-X LIGHT THEME
+   ========================================= */
+
+.app-shell.light-theme {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+/* Sidebar */
+.light-theme .sidebar {
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+}
+
+.light-theme .brand h2 {
+  color: #172033;
+}
+
+.light-theme .brand small,
+.light-theme .nav-label,
+.light-theme .version {
+  color: #64748b;
+}
+
+.light-theme .nav-item {
+  color: #475569;
+}
+
+.light-theme .nav-item:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.light-theme .nav-active {
+  color: #0891b2;
+  background: #e0f7fa;
+}
+
+.light-theme .system-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+
+/* Header */
+.light-theme .topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.light-theme .topbar h1,
+.light-theme .welcome-row h2 {
+  color: #172033;
+}
+
+.light-theme .breadcrumb {
+  color: #64748b;
+}
+
+.light-theme .header-search {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #64748b;
+}
+
+.light-theme .header-search kbd {
+  border-color: #cbd5e1;
+}
+
+.light-theme .icon-button,
+.light-theme .menu-button,
+.light-theme .mobile-close {
+  color: #475569;
+}
+
+/* Main dashboard */
+.light-theme .main-content,
+.light-theme .dashboard-content {
+  background: #f1f5f9;
+}
+
+.light-theme .welcome-row p,
+.light-theme .panel-subtitle {
+  color: #64748b;
+}
+
+/* Panels and cards */
+.light-theme .panel,
+.light-theme .stat-card,
+.light-theme .settings-overview-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.light-theme .panel-title,
+.light-theme .stat-card h3,
+.light-theme .stat-card strong {
+  color: #172033;
+}
+
+.light-theme .settings-overview-card strong {
+  color: #172033;
+}
+
+.light-theme .settings-overview-card span {
+  color: #64748b;
+}
+
+/* Settings */
+.light-theme .settings-row {
+  color: #1e293b;
+  border-bottom-color: #e2e8f0;
+}
+
+.light-theme .settings-row-info strong,
+.light-theme .settings-row > strong {
+  color: #1e293b;
+}
+
+.light-theme .settings-row-info span,
+.light-theme .settings-row > span {
+  color: #64748b;
+}
+
+.light-theme .settings-reset-button {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.light-theme .settings-reset-button:hover {
+  background: #e2e8f0;
+}
+
+.light-theme .settings-switch-track {
+  background: #cbd5e1;
+}
+
+.light-theme .settings-range-labels {
+  color: #64748b;
+}
+
+.light-theme .health-note {
+  background: #ecfeff;
+  color: #155e75;
+  border-color: #a5f3fc;
+}
+
+.light-theme .theme-toggle-button {
+  background: #e0f7fa;
+  border: 1px solid #a5f3fc;
+  color: #0e7490;
+  padding: 9px 13px;
+  border-radius: 7px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.light-theme .theme-toggle-button:hover {
+  background: #cffafe;
+}
+
+/* Tables */
+.light-theme table {
+  color: #334155;
+}
+
+.light-theme th {
+  background: #f8fafc;
+  color: #475569;
+}
+
+.light-theme td {
+  color: #334155;
+  border-color: #e2e8f0;
+}
+
+.light-theme tr {
+  border-color: #e2e8f0;
+}
+
+/* Form fields */
+.light-theme input:not([type="checkbox"]):not([type="range"]),
+.light-theme select,
+.light-theme textarea {
+  background: #ffffff;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+/* General text and separators */
+.light-theme .panel *,
+.light-theme .settings-page {
+  border-color: inherit;
+}
+
+.light-theme hr {
+  border-color: #e2e8f0;
+}
+
+/* Theme transition */
+.app-shell,
+.app-shell * {
+  transition-property: background-color, color, border-color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+/* Light theme - Statistics card text contrast */
+
+.app-shell.light-theme .stat-card .stat-top {
+  color: #475569 !important;
+}
+
+.app-shell.light-theme .stat-card .stat-value {
+  color: #172033 !important;
+}
+
+.app-shell.light-theme .stat-card .stat-bottom {
+  color: #475569 !important;
+}
+
+.app-shell.light-theme .stat-card .stat-change {
+  color: #059669 !important;
+}
+/* Light theme - System Health readability */
+.app-shell.light-theme .health-metric strong {
+  color: #172033 !important;
+}
+
+.app-shell.light-theme .health-metric span {
+  color: #475569 !important;
+}
+/* Identity Recovery - Light Theme Fix */
+
+.app-shell.light-theme .object-stat > span {
+  color: #475569 !important;
+}
+
+.app-shell.light-theme .object-stat > strong {
+  color: #172033;
+}
+
+.app-shell.light-theme .object-stat > small {
+  color: #64748b;
+}
+
+/* Recovery summary cards */
+.app-shell.light-theme .identity-status-grid > div {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.app-shell.light-theme .identity-status-grid strong {
+  color: #172033;
+}
+
+.app-shell.light-theme .identity-status-grid span {
+  color: #475569;
+}
+
+/* Recovery event details */
+.app-shell.light-theme .identity-event .event-title strong {
+  color: #172033;
+}
+
+.app-shell.light-theme .identity-event .event-content p {
+  color: #475569;
+}
+
+.app-shell.light-theme .identity-event-bottom small {
+  color: #64748b;
+}
+
+/* Recovery event separators */
+.app-shell.light-theme .identity-event {
+  border-bottom-color: #e2e8f0;
+}
+
+/* Recovery detail modal */
+.app-shell.light-theme .object-detail-modal {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+.app-shell.light-theme .object-detail-grid > div {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.app-shell.light-theme .object-detail-grid span {
+  color: #475569;
+}
+
+.app-shell.light-theme .object-detail-grid strong {
+  color: #172033;
+}
+
+.app-shell.light-theme .object-demo-note {
+  background: #f1f5f9;
+  color: #475569;
+}
+/* Tracking History - Light Theme */
+
+.app-shell.light-theme .history-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.app-shell.light-theme .history-card > p {
+  color: #475569;
+}
+
+.app-shell.light-theme .history-category {
+  color: #64748b;
+}
+
+.app-shell.light-theme .history-meta {
+  color: #475569;
+}
+
+.app-shell.light-theme .history-card-footer {
+  color: #64748b;
+  border-top-color: #e2e8f0;
+}
+
+.app-shell.light-theme .event-title strong {
+  color: #172033;
+}
+
+.app-shell.light-theme .history-line {
+  background: #cbd5e1;
+}
