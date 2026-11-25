@@ -201,7 +201,9 @@ function App() {
               <TrackingTable
               onViewAll={() => setActive('Object Tracking')}
             />
-              <RecoveryHistory />
+              <RecoveryHistory
+              onViewAll={() => setActive('Identity Recovery')}
+            />
             </div>
 
             <PerformanceChart />
@@ -282,4 +284,5 @@ function App() {
 }
 
 export default App
+
 

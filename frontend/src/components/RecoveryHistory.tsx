@@ -1,8 +1,12 @@
 
 import { recoveryEvents } from '../data/mockData'
-import { RefreshCw, Clock3 } from 'lucide-react'
+import { RefreshCw, Clock3, ArrowUpRight } from 'lucide-react'
 
-export default function RecoveryHistory() {
+interface RecoveryHistoryProps {
+  onViewAll: () => void
+}
+
+export default function RecoveryHistory({ onViewAll }: RecoveryHistoryProps) {
   return (
     <section className="panel recovery-panel">
       <div className="panel-heading">
@@ -27,6 +31,17 @@ export default function RecoveryHistory() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="table-footer">
+        <span>Showing recent recovery events</span>
+        <button
+          type="button"
+          className="table-view-all"
+          onClick={onViewAll}
+        >
+          View all <ArrowUpRight size={13} />
+        </button>
       </div>
     </section>
   )
