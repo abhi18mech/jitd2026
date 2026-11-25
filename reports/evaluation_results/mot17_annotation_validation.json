@@ -1,0 +1,16 @@
+{
+    "sequence": "MOT17-02-FRCNN",
+    "status": "PASSED",
+    "expected_frames": 600,
+    "actual_frames": 600,
+    "annotations": 30003,
+    "unique_object_ids": 83,
+    "frames_with_annotations": 600,
+    "malformed_rows": 0,
+    "invalid_boxes": 0,
+    "outside_boxes": 981,
+    "errors": [],
+    "warnings": [
+        "Bounding boxes outside image boundaries: 981"
+    ]
+}
