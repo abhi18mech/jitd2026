@@ -19,6 +19,7 @@ import ObjectTracking from './components/ObjectTracking'
 import IdentityRecovery from './components/IdentityRecovery'
 import TrackingHistory from './components/TrackingHistory'
 import Analytics from './components/Analytics'
+import Settings from './components/Settings'
 import { trackingObjects, performanceData } from './data/mockData'
 import './App.css'
 
@@ -217,48 +218,8 @@ case 'Tracking History':
 
     case 'Analytics':
   return <Analytics />  
-      case 'Settings':
-        return (
-          <>
-            <div className="welcome-row">
-              <div>
-                <h2>Settings</h2>
-                <p>Application information and demonstration configuration.</p>
-              </div>
-            </div>
-
-            <section className="panel">
-              <div className="panel-heading">
-                <div>
-                  <div className="panel-title">Application Settings</div>
-                  <div className="panel-subtitle">
-                    Current frontend configuration
-                  </div>
-                </div>
-              </div>
-
-              <div className="health-metric">
-                <span>Application</span>
-                <strong>ARGUS-X</strong>
-              </div>
-              <div className="health-metric">
-                <span>Version</span>
-                <strong>1.0.0 Demo</strong>
-              </div>
-              <div className="health-metric">
-                <span>Data source</span>
-                <strong>Mock data</strong>
-              </div>
-              <div className="health-metric">
-                <span>Interface theme</span>
-                <strong>Dark</strong>
-              </div>
-              <div className="health-note">
-                Backend settings will be added after API integration.
-              </div>
-            </section>
-          </>
-        )
+     case 'Settings':
+  return <Settings /> 
 
       default:
         return <h2>Page not found</h2>
