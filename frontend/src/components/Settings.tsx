@@ -9,6 +9,8 @@ import {
   RotateCcw,
 } from 'lucide-react'
 
+const STORAGE_KEY = 'argus-x-settings'
+
 const initialCameras = [
   { id: 'CAM-01', name: 'Camera 01', enabled: true },
   { id: 'CAM-02', name: 'Camera 02', enabled: true },
@@ -16,22 +18,98 @@ const initialCameras = [
   { id: 'CAM-04', name: 'Camera 04', enabled: true },
 ]
 
+const defaultSettings = {
+  cameras: initialCameras,
+  threshold: 70,
+  continuousTracking: true,
+  identityRecovery: true,
+  notifications: {
+    lost: true,
+    recovered: true,
+    uncertain: false,
+  },
+}
+
 interface SettingsProps {
   theme: 'dark' | 'light'
   onThemeChange: (theme: 'dark' | 'light') => void
 }
 
-export default function Settings({ theme, onThemeChange }: SettingsProps) {
-  const [cameras, setCameras] = useState(initialCameras)
-  const [threshold, setThreshold] = useState(70)
-  const [continuousTracking, setContinuousTracking] = useState(true)
-  const [identityRecovery, setIdentityRecovery] = useState(true)
+function loadSettings() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
 
-  const [notifications, setNotifications] = useState({
-    lost: true,
-    recovered: true,
-    uncertain: false,
-  })
+    if (!stored) return defaultSettings
+
+    const parsed = JSON.parse(stored)
+
+    return {
+      cameras: Array.isArray(parsed.cameras)
+        ? initialCameras.map(camera => {
+            const saved = parsed.cameras.find(
+              (item: { id: string; enabled: boolean }) =>
+                item.id === camera.id
+            )
+
+            return {
+              ...camera,
+              enabled:
+                typeof saved?.enabled === 'boolean'
+                  ? saved.enabled
+                  : camera.enabled,
+            }
+          })
+        : defaultSettings.cameras,
+
+      threshold:
+        typeof parsed.threshold === 'number'
+          ? Math.min(100, Math.max(10, parsed.threshold))
+          : defaultSettings.threshold,
+
+      continuousTracking:
+        typeof parsed.continuousTracking === 'boolean'
+          ? parsed.continuousTracking
+          : defaultSettings.continuousTracking,
+
+      identityRecovery:
+        typeof parsed.identityRecovery === 'boolean'
+          ? parsed.identityRecovery
+          : defaultSettings.identityRecovery,
+
+      notifications: {
+        lost:
+          typeof parsed.notifications?.lost === 'boolean'
+            ? parsed.notifications.lost
+            : defaultSettings.notifications.lost,
+        recovered:
+          typeof parsed.notifications?.recovered === 'boolean'
+            ? parsed.notifications.recovered
+            : defaultSettings.notifications.recovered,
+        uncertain:
+          typeof parsed.notifications?.uncertain === 'boolean'
+            ? parsed.notifications.uncertain
+            : defaultSettings.notifications.uncertain,
+      },
+    }
+  } catch {
+    return defaultSettings
+  }
+}
+
+export default function Settings({ theme, onThemeChange }: SettingsProps) {
+  const [initialSettings] = useState(loadSettings)
+
+  const [cameras, setCameras] = useState(initialSettings.cameras)
+  const [threshold, setThreshold] = useState(initialSettings.threshold)
+  const [continuousTracking, setContinuousTracking] = useState(
+    initialSettings.continuousTracking
+  )
+  const [identityRecovery, setIdentityRecovery] = useState(
+    initialSettings.identityRecovery
+  )
+  const [notifications, setNotifications] = useState(
+    initialSettings.notifications
+  )
 
   const [saved, setSaved] = useState(false)
 
@@ -55,6 +133,12 @@ export default function Settings({ theme, onThemeChange }: SettingsProps) {
   }
 
   const resetSettings = () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to reset all settings to default values?'
+    )
+
+    if (!confirmed) return
+
     setCameras(initialCameras)
     setThreshold(70)
     setContinuousTracking(true)
@@ -64,11 +148,32 @@ export default function Settings({ theme, onThemeChange }: SettingsProps) {
       recovered: true,
       uncertain: false,
     })
-    setSaved(false)
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultSettings))
+      setSaved(true)
+    } catch {
+      setSaved(false)
+      alert('Unable to save default settings in this browser.')
+    }
   }
 
   const saveSettings = () => {
-    setSaved(true)
+    try {
+      const settings = {
+        cameras,
+        threshold,
+        continuousTracking,
+        identityRecovery,
+        notifications,
+      }
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
+      setSaved(true)
+    } catch {
+      setSaved(false)
+      alert('Unable to save settings in this browser.')
+    }
   }
 
   const enabledCameras = cameras.filter(camera => camera.enabled).length
@@ -299,29 +404,29 @@ export default function Settings({ theme, onThemeChange }: SettingsProps) {
           <strong>Mock data</strong>
         </div>
 
-       <div className="settings-row">
-  <span>Interface theme</span>
-  <strong>{theme === 'dark' ? 'Dark' : 'Light'}</strong>
-</div>
+        <div className="settings-row">
+          <span>Interface theme</span>
+          <strong>{theme === 'dark' ? 'Dark' : 'Light'}</strong>
+        </div>
 
-<div className="settings-row">
-  <div className="settings-row-info">
-    <strong>Dashboard Appearance</strong>
-    <span>Switch between dark and light themes</span>
-  </div>
+        <div className="settings-row">
+          <div className="settings-row-info">
+            <strong>Dashboard Appearance</strong>
+            <span>Switch between dark and light themes</span>
+          </div>
 
-  <button
-    className="theme-toggle-button"
-    onClick={() =>
-      onThemeChange(theme === 'dark' ? 'light' : 'dark')
-    }
-  >
-    {theme === 'dark' ? '☀ Light Theme' : '☾ Dark Theme'}
-  </button>
-</div>
+          <button
+            className="theme-toggle-button"
+            onClick={() =>
+              onThemeChange(theme === 'dark' ? 'light' : 'dark')
+            }
+          >
+            {theme === 'dark' ? '☀ Light Theme' : '☾ Dark Theme'}
+          </button>
+        </div>
 
         <div className="health-note">
-          Settings are currently managed in frontend state only.
+          Settings are saved in this browser using local storage.
           Backend integration is not enabled.
         </div>
       </section>
@@ -339,7 +444,7 @@ export default function Settings({ theme, onThemeChange }: SettingsProps) {
         <div className="settings-save-group">
           {saved && (
             <span className="settings-saved-message">
-              Settings saved for this session
+              Settings saved successfully in this browser
             </span>
           )}
 
