@@ -2,7 +2,7 @@
 import time
 
 import cv2
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
@@ -47,10 +47,22 @@ def generate_frames():
 
     if not camera.isOpened():
         camera.release()
+        print("ARGUS-X: Camera could not be opened")
         return
+
+    session_id = None
 
     try:
         ai_engine = get_engine()
+
+        from backend.app.supabase_repository import (
+            start_monitoring_session,
+            end_monitoring_session,
+        )
+
+        session_id = start_monitoring_session()
+
+        print("ARGUS-X: Live camera monitoring started")
 
         while True:
             success, frame = camera.read()
@@ -79,8 +91,19 @@ def generate_frames():
 
             time.sleep(0.001)
 
+    except GeneratorExit:
+        raise
+
+    except Exception as exc:
+        print(f"ARGUS-X CAMERA ERROR: {exc}")
+
     finally:
         camera.release()
+
+        if session_id:
+            end_monitoring_session(session_id)
+
+        print("ARGUS-X: Live camera monitoring stopped")
 
 
 @app.get("/api/stream")

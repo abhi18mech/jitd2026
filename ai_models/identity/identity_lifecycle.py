@@ -1,5 +1,35 @@
 ﻿import time
 from dataclasses import dataclass, field
+from pathlib import Path
+import sys
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+try:
+    from backend.app.supabase_repository import (
+        register_identity,
+        mark_identity_lost,
+        recover_identity,
+        update_identity_seen,
+        expire_identity,
+    )
+except ImportError:
+    register_identity = None
+    mark_identity_lost = None
+    recover_identity = None
+    update_identity_seen = None
+    expire_identity = None
+
+
+def persist(function, *args):
+    if function is None:
+        return
+    try:
+        function(*args)
+    except Exception as exc:
+        print(f"DATABASE SYNC WARNING: {exc}")
 
 
 @dataclass
@@ -9,6 +39,7 @@ class Identity:
     tracker_id: int = None
     last_seen: float = field(default_factory=time.time)
     observations: int = 0
+    last_db_sync: float = 0.0
 
 
 class IdentityLifecycleManager:
@@ -29,6 +60,8 @@ class IdentityLifecycleManager:
         self.lost_timeout = lost_timeout
         self.max_missed_frames = max_missed_frames
 
+        self.db_sync_interval = 15
+
         print("ARGUS-X Identity Lifecycle Manager Initialized")
 
     def update_track(self, tracker_id):
@@ -37,9 +70,14 @@ class IdentityLifecycleManager:
             identity_id = self.tracker_to_identity[tracker_id]
             identity = self.identities[identity_id]
 
-            identity.last_seen = time.time()
+            now = time.time()
+            identity.last_seen = now
             identity.observations += 1
             self.missed_frames[tracker_id] = 0
+
+            if now - identity.last_db_sync >= self.db_sync_interval:
+                persist(update_identity_seen, identity_id)
+                identity.last_db_sync = now
 
             return identity_id
 
@@ -66,6 +104,7 @@ class IdentityLifecycleManager:
         del self.pending[tracker_id]
 
         print(f"NEW IDENTITY CONFIRMED: ARGUS-ID {identity_id}")
+        persist(register_identity, identity_id, tracker_id)
 
         return identity_id
 
@@ -79,9 +118,12 @@ class IdentityLifecycleManager:
         if identity_id in self.tracker_to_identity.values():
             return False
 
+        now = time.time()
+
         identity.state = "ACTIVE"
         identity.tracker_id = tracker_id
-        identity.last_seen = time.time()
+        identity.last_seen = now
+        identity.last_db_sync = now
         identity.observations += 1
 
         self.tracker_to_identity[tracker_id] = identity_id
@@ -89,6 +131,7 @@ class IdentityLifecycleManager:
         self.pending.pop(tracker_id, None)
 
         print(f"IDENTITY RECOVERED: ARGUS-ID {identity_id}")
+        persist(recover_identity, identity_id, tracker_id)
 
         return True
 
@@ -118,6 +161,7 @@ class IdentityLifecycleManager:
                 del self.missed_frames[tracker_id]
 
                 print(f"IDENTITY LOST: ARGUS-ID {identity_id}")
+                persist(mark_identity_lost, identity_id)
 
         for tracker_id in list(self.pending):
             if tracker_id not in visible:
@@ -132,10 +176,13 @@ class IdentityLifecycleManager:
             if identity.state == "LOST":
                 if now - identity.last_seen > self.lost_timeout:
                     identity.state = "EXPIRED"
+
                     print(
                         f"IDENTITY EXPIRED: ARGUS-ID "
                         f"{identity.identity_id}"
                     )
+
+                    persist(expire_identity, identity.identity_id)
 
     def get_statistics(self):
 
@@ -169,7 +216,6 @@ if __name__ == "__main__":
     manager.mark_missing_tracks([])
 
     assert manager.identities[1].state == "LOST"
-
     assert manager.confirm_recovery(202, 1)
 
     print("Statistics:", manager.get_statistics())
