@@ -28,14 +28,15 @@ const statusColors: Record<string, string> = {
   Lost: '#f97316',
   Recovered: '#a78bfa',
   Uncertain: '#eab308',
+  Expired: '#64748b',
 }
 
-const statusData = ['Active', 'Lost', 'Recovered', 'Uncertain'].map(
-  status => ({
-    name: status,
-    value: trackingObjects.filter(item => item.status === status).length,
-  })
-)
+const statuses = ['Active', 'Lost', 'Recovered', 'Uncertain', 'Expired']
+
+const statusData = statuses.map(status => ({
+  name: status,
+  value: trackingObjects.filter(item => item.status === status).length,
+}))
 
 const cameraData = ['CAM-01', 'CAM-02', 'CAM-03', 'CAM-04'].map(camera => ({
   camera,
@@ -107,7 +108,7 @@ export default function Analytics() {
 
         <div className="stat-card">
           <div className="stat-top">
-            <span>Active Cameras</span>
+            <span>Cameras Represented</span>
             <div className="stat-icon purple"><Camera size={19} /></div>
           </div>
           <div className="stat-value">{cameraData.length}</div>
