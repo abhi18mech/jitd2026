@@ -271,11 +271,12 @@ const paginatedEvents = filteredEvents.slice(
     </button>
   </div>
 
-  <span>ARGUS-X RECOVERY RECORDS</span>
+    <span>ARGUS-X RECOVERY RECORDS</span>
 </div>
 
+</section>
 
-      {selected && (
+{selected && (
         <div
           className="object-modal-overlay"
           onClick={() => setSelected(null)}
